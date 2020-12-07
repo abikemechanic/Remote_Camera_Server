@@ -33,8 +33,14 @@ def get_format_image():
     img = vid_cam.get_frame()
     time_string = time.strftime('%H:%M:%S', time.localtime())
 
+    # black outline
     cv2.putText(img, text=time_string, org=(10, 40),
                 fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0, 0, 0),
+                thickness=4)
+
+    # white text
+    cv2.putText(img, text=time_string, org=(10, 40),
+                fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(255,255,255),
                 thickness=1)
 
     return img
