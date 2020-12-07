@@ -4,6 +4,7 @@ import zmq
 import time
 import func_timeout
 import json
+from flir_camera import FlirCamera
 
 
 def get_config():
@@ -11,9 +12,9 @@ def get_config():
         return json.load(f)
 
 
-def connect_to_zmq_server():
+def connect_to_zmq_server(address):
     try:
-        sndr = imagezmq.ImageSender(connect_to=f'tcp://{server_address}')
+        sndr = imagezmq.ImageSender(connect_to=f'tcp://{address}:555')
         return sndr
     except zmq.error.ZMQError as ex:
         print(ex)
@@ -29,7 +30,7 @@ def send_image_to_hub(jpg_img):
 
 @func_timeout.func_set_timeout(5)
 def get_format_image():
-    _, img = vid_cam.read()
+    img = vid_cam.get_frame()
     time_string = time.strftime('%H:%M:%S', time.localtime())
 
     cv2.putText(img, text=time_string, org=(10, 40),
@@ -39,6 +40,15 @@ def get_format_image():
     return img
 
 
+def get_camera(camera_spec):
+    if camera_spec == 'Blackfly':
+        return FlirCamera();
+    elif camera_spec == 'USB':
+        return cv2.VideoCapture(0)
+    else:
+        raise ValueError("Need a camera specification in the config")
+
+
 if __name__ == '__main__':
     cfg = get_config()
     sender_name = cfg['sender_name']
@@ -46,9 +56,9 @@ if __name__ == '__main__':
 
     sender = False
     while not sender:
-        sender = connect_to_zmq_server()
+        sender = connect_to_zmq_server(server_address)
 
-    vid_cam = cv2.VideoCapture(0)
+    vid_cam = get_camera(cfg['camera_type'])
 
     while 1:
         try:
@@ -57,6 +67,7 @@ if __name__ == '__main__':
             time.sleep(1/28)
 
         except cv2.error as ex:
+            print('cv2.error')
             print(ex)
 
         except func_timeout.FunctionTimedOut as ex:

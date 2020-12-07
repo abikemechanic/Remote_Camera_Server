@@ -1,5 +1,5 @@
 imagezmq==1.1.1
-numpy==1.19.3
-opencv-python==4.4.0.40
+numpy
+opencv-python
 pyzmq==20.0.0
 func-timeout
