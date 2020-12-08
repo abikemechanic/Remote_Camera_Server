@@ -126,3 +126,6 @@ dmypy.json
 
 # PyCharm specific folders/files
 .idea
+
+# keep config files out
+server_config.cfg

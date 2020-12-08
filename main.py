@@ -79,4 +79,4 @@ if __name__ == '__main__':
         except func_timeout.FunctionTimedOut as ex:
             print(ex)
             del sender
-            sender = connect_to_zmq_server()
+            sender = connect_to_zmq_server(server_address)
