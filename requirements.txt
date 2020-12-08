@@ -1,5 +1,8 @@
+func-timeout==4.3.5
 imagezmq==1.1.1
-numpy
-opencv-python
+numpy==1.19.4
+opencv-python==4.4.0.46
+Pillow==7.2.0
 pyzmq==20.0.0
-func-timeout
+simple-pyspin==0.1.1
+spinnaker-python @ file:///E:/Repos/Python/BlackFlyCamera/BlackFlyCamera/spinnaker_python-2.0.0.147-cp38-cp38-win32.whl
