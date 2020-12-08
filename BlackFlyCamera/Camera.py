@@ -54,7 +54,9 @@ class Camera:
 # endregion
 
     def _init_camera(self):
-        pass
+        self.cam.PixelFormat = 'BGR8'
+        self.cam.Height = 800
+        self.cam.Width = 600
 
     def get_frame(self):
         return self.cam.get_array()
