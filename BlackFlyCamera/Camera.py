@@ -4,7 +4,9 @@ from PIL import Image
 
 class Camera:
     def __init__(self, camera_index=0):
-        self.cam = simple_pyspin.Camera(index=camera_index)
+        self._cam_index = camera_index
+
+        self.cam = simple_pyspin.Camera(index=self._cam_index)
         self.cam.init()
         self._init_camera()
         self.cam.start()
@@ -54,9 +56,14 @@ class Camera:
 # endregion
 
     def _init_camera(self):
-        self.cam.PixelFormat = 'BGR8'
-        self.cam.Height = 800
-        self.cam.Width = 600
+        try:
+            self.cam.PixelFormat = 'BGR8'
+            self.cam.Height = 800
+            self.cam.Width = 600
+        except simple_pyspin.CameraError as ex:
+            self.cam.start()
+            self.cam.stop()
+            self._init_camera()
 
     def get_frame(self):
         return self.cam.get_array()
