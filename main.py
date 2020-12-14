@@ -25,7 +25,9 @@ def connect_to_zmq_server(address):
 @func_timeout.func_set_timeout(2)
 def send_image_to_hub(jpg_img):
     reply_from_server = sender.send_jpg(sender_name, jpg_img)
-    print(reply_from_server)
+    if reply_from_server != b'OK':
+        print(reply_from_server)
+    # print(reply_from_server)
 
 
 @func_timeout.func_set_timeout(2)
@@ -73,7 +75,8 @@ if __name__ == '__main__':
             time.sleep(1/28)
 
         except [func_timeout.FunctionTimedOut,
-                cv2.error] as ex:
+                cv2.error,
+                Exception] as ex:
 
             print(ex)
             del sender
@@ -81,4 +84,5 @@ if __name__ == '__main__':
 
             vid_cam = get_camera(cfg['camera_type'])
             sender = connect_to_zmq_server(server_address)
+
 
