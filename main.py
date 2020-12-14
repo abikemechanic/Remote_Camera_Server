@@ -22,13 +22,13 @@ def connect_to_zmq_server(address):
         return False
 
 
-@func_timeout.func_set_timeout(5)
+@func_timeout.func_set_timeout(2)
 def send_image_to_hub(jpg_img):
     reply_from_server = sender.send_jpg(sender_name, jpg_img)
     print(reply_from_server)
 
 
-@func_timeout.func_set_timeout(5)
+@func_timeout.func_set_timeout(2)
 def get_format_image():
     img = vid_cam.get_frame()
     time_string = time.strftime('%H:%M:%S', time.localtime())
@@ -79,4 +79,8 @@ if __name__ == '__main__':
         except func_timeout.FunctionTimedOut as ex:
             print(ex)
             del sender
+            del vid_cam
+
+            vid_cam = get_camera(cfg['camera_type'])
             sender = connect_to_zmq_server(server_address)
+
