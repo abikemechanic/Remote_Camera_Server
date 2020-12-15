@@ -80,7 +80,7 @@ if __name__ == '__main__':
         except func_timeout.FunctionTimedOut as ex:
             print(ex)
             del sender
-            del vid_cam
+            vid_cam.cam.end_camera()
 
             vid_cam = get_camera(cfg['camera_type'])
             sender = connect_to_zmq_server(server_address)
