@@ -78,8 +78,7 @@ if __name__ == '__main__':
             time.sleep(1/28)
 
         except [func_timeout.FunctionTimedOut,
-                cv2.error,
-                Exception] as ex:
+                cv2.error] as ex:
 
             print(ex)
             del sender
