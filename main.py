@@ -12,14 +12,17 @@ def get_config():
         return json.load(f)
 
 
-def connect_to_zmq_server(address):
+def connect_to_zmq_server(address, recursion_count=0):
     try:
         sndr = imagezmq.ImageSender(connect_to=f'tcp://{address}:555')
         return sndr
     except zmq.error.ZMQError as ex:
+        if recursion_count > 10:
+            return False
+
         print(ex)
         time.sleep(10)
-        return False
+        connect_to_zmq_server(address, recursion_count+1)
 
 
 @func_timeout.func_set_timeout(2)
@@ -48,9 +51,9 @@ def get_format_image():
     return img
 
 
-def get_camera(camera_spec):
+def get_camera(camera_spec, recursion_count=0):
     if camera_spec == 'Blackfly':
-        return FlirCamera();
+        return FlirCamera()
     elif camera_spec == 'USB':
         return cv2.VideoCapture(0)
     else:
