@@ -77,9 +77,7 @@ if __name__ == '__main__':
             send_image_to_hub(jpg)
             time.sleep(1/28)
 
-        except [func_timeout.FunctionTimedOut,
-                cv2.error] as ex:
-
+        except func_timeout.FunctionTimedOut as ex:
             print(ex)
             del sender
             del vid_cam
