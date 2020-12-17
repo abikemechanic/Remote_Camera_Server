@@ -89,4 +89,8 @@ if __name__ == '__main__':
             vid_cam = get_camera(cfg['camera_type'])
             sender = connect_to_zmq_server(server_address)
 
+        except cv2.error as ex:
+            print(ex)
+            
+
 
