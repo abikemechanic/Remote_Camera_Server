@@ -35,11 +35,11 @@ def send_image_to_hub(jpg_img):
 
 @func_timeout.func_set_timeout(2)
 def get_format_image():
-    if (cfg['camera_type'] == "Blackfly"):
+    if cfg['camera_type'] == "Blackfly":
         img = vid_cam.get_frame()
     else:
-        img = vid_cam.read()
-        
+        ret, img = vid_cam.read()
+
     time_string = time.strftime('%H:%M:%S', time.localtime())
 
     # black outline
