@@ -14,7 +14,7 @@ def get_config():
 
 def connect_to_zmq_server(address, recursion_count=0):
     try:
-        sndr = imagezmq.ImageSender(connect_to=f'tcp://{address}:555', REQ_REP=False)
+        sndr = imagezmq.ImageSender(connect_to=f'tcp://{address}:555')
         return sndr
     except zmq.error.ZMQError as connect_ex:
         if recursion_count > 10:
