@@ -14,13 +14,13 @@ def get_config():
 
 def connect_to_zmq_server(address, recursion_count=0):
     try:
-        sndr = imagezmq.ImageSender(connect_to=f'tcp://{address}:555')
+        sndr = imagezmq.ImageSender(connect_to=f'tcp://{address}:555', REQ_REP=False)
         return sndr
-    except zmq.error.ZMQError as ex:
+    except zmq.error.ZMQError as connect_ex:
         if recursion_count > 10:
             return False
 
-        print(ex)
+        print(connect_ex)
         time.sleep(10)
         connect_to_zmq_server(address, recursion_count+1)
 
@@ -79,7 +79,6 @@ if __name__ == '__main__':
         try:
             ret_code, jpg = cv2.imencode('.jpg', get_format_image(), [int(cv2.IMWRITE_JPEG_QUALITY), 95])
             send_image_to_hub(jpg)
-            time.sleep(1/28)
 
         except func_timeout.FunctionTimedOut as ex:
             print(ex)
@@ -91,6 +90,6 @@ if __name__ == '__main__':
 
         except cv2.error as ex:
             print(ex)
-            
+
 
 
