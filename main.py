@@ -30,7 +30,6 @@ def send_image_to_hub(jpg_img):
     reply_from_server = sender.send_jpg(sender_name, jpg_img)
     if reply_from_server != b'OK':
         print(reply_from_server)
-    print(reply_from_server)
 
 
 @func_timeout.func_set_timeout(2)
@@ -52,6 +51,8 @@ def get_format_image():
                 fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(255,255,255),
                 thickness=1)
 
+    # cv2.imshow('t', img)
+    print(time.time())
     return img
 
 
@@ -82,11 +83,11 @@ if __name__ == '__main__':
 
         except func_timeout.FunctionTimedOut as ex:
             print(ex)
-            del sender
-            vid_cam.cam.end_camera()
-
-            vid_cam = get_camera(cfg['camera_type'])
-            sender = connect_to_zmq_server(server_address)
+            # del sender
+            # vid_cam.cam.end_camera()
+            #
+            # vid_cam = get_camera(cfg['camera_type'])
+            # sender = connect_to_zmq_server(server_address)
 
         except cv2.error as ex:
             print(ex)
