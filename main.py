@@ -5,6 +5,7 @@ import time
 import func_timeout
 import json
 from flir_camera import FlirCamera
+from image_sender import ImageSender
 
 
 def get_config():
@@ -12,24 +13,24 @@ def get_config():
         return json.load(f)
 
 
-def connect_to_zmq_server(address, recursion_count=0):
-    try:
-        sndr = imagezmq.ImageSender(connect_to=f'tcp://{address}:555')
-        return sndr
-    except zmq.error.ZMQError as connect_ex:
-        if recursion_count > 10:
-            return False
-
-        print(connect_ex)
-        time.sleep(10)
-        connect_to_zmq_server(address, recursion_count+1)
-
-
-@func_timeout.func_set_timeout(2)
-def send_image_to_hub(jpg_img):
-    reply_from_server = sender.send_jpg(sender_name, jpg_img)
-    if reply_from_server != b'OK':
-        print(reply_from_server)
+# def connect_to_zmq_server(address, recursion_count=0):
+#     try:
+#         sndr = imagezmq.ImageSender(connect_to=f'tcp://{address}:555')
+#         return sndr
+#     except zmq.error.ZMQError as connect_ex:
+#         if recursion_count > 10:
+#             return False
+#
+#         print(connect_ex)
+#         time.sleep(10)
+#         connect_to_zmq_server(address, recursion_count+1)
+#
+#
+# @func_timeout.func_set_timeout(2)
+# def send_image_to_hub(jpg_img):
+#     reply_from_server = sender.send_jpg(sender_name, jpg_img)
+#     if reply_from_server != b'OK':
+#         print(reply_from_server)
 
 
 @func_timeout.func_set_timeout(2)
@@ -52,7 +53,7 @@ def get_format_image():
                 thickness=1)
 
     # cv2.imshow('t', img)
-    print(time.time())
+    # print(time.time())
     return img
 
 
@@ -70,27 +71,24 @@ if __name__ == '__main__':
     sender_name = cfg['sender_name']
     server_address = cfg['server_address']
 
-    sender = False
-    while not sender:
-        sender = connect_to_zmq_server(server_address)
+    sender = ImageSender(server_address, sender_name)
 
     vid_cam = get_camera(cfg['camera_type'])
 
     while 1:
         try:
             ret_code, jpg = cv2.imencode('.jpg', get_format_image(), [int(cv2.IMWRITE_JPEG_QUALITY), 95])
-            send_image_to_hub(jpg)
-
+            resp = sender.send_image_with_timeout(jpg)
+            # resp = sender.send_image_without_timeout(jpg)
         except func_timeout.FunctionTimedOut as ex:
             print(ex)
-            # del sender
-            # vid_cam.cam.end_camera()
-            #
-            # vid_cam = get_camera(cfg['camera_type'])
-            # sender = connect_to_zmq_server(server_address)
 
         except cv2.error as ex:
             print(ex)
+
+        except zmq.error.ZMQError as ex:
+            print(ex)
+            sender = None
 
 
 
