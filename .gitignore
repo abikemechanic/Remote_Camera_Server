@@ -129,3 +129,4 @@ dmypy.json
 
 # keep config files out
 server_config.cfg
+server_config.cfg 
