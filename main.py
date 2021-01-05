@@ -11,6 +11,7 @@ def get_config():
     with open('server_config.cfg') as f:
         return json.load(f)
 
+
 @func_timeout.func_set_timeout(2)
 def get_format_image():
     if cfg['camera_type'] == "Blackfly":
@@ -58,8 +59,9 @@ if __name__ == '__main__':
 
     while 1:
         try:
-            if not sender:
+            if not sender.connected:
                 sender = ImageSender(server_address, sender_name)
+
             ret_code, jpg = cv2.imencode('.jpg', get_format_image(), [int(cv2.IMWRITE_JPEG_QUALITY), 95])
             resp = sender.send_image_with_timeout(jpg)
         except func_timeout.FunctionTimedOut as ex:
