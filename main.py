@@ -62,13 +62,15 @@ if __name__ == '__main__':
             ret_code, jpg = cv2.imencode('.jpg', get_format_image(), [int(cv2.IMWRITE_JPEG_QUALITY), 95])
             resp = sender.send_image_with_timeout(jpg)
         except func_timeout.FunctionTimedOut as ex:
-            print(ex)
+            print(ex.with_traceback)
+            time.sleep(5)
 
         except cv2.error as ex:
-            print(ex)
+            print(ex.with_traceback)
+            time.sleep(5)
 
         except zmq.error.ZMQError as ex:
-            print(ex)
+            print(ex.with_traceback)
 
         except AttributeError:
             print("Attribure Error")
