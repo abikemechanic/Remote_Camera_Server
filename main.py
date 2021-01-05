@@ -35,7 +35,7 @@ def get_format_image():
     return img
 
 
-def get_camera(camera_spec, recursion_count=0):
+def get_camera(camera_spec):
     if camera_spec == 'Blackfly':
         # import FlirCamera only if necessary
         # it is difficult to install the needed libraries and I don't want to everytime
@@ -58,9 +58,8 @@ if __name__ == '__main__':
 
     while 1:
         try:
-            if sender is None:
+            if not sender:
                 sender = ImageSender(server_address, sender_name)
-
             ret_code, jpg = cv2.imencode('.jpg', get_format_image(), [int(cv2.IMWRITE_JPEG_QUALITY), 95])
             resp = sender.send_image_with_timeout(jpg)
         except func_timeout.FunctionTimedOut as ex:
@@ -74,7 +73,7 @@ if __name__ == '__main__':
             sender = None
 
         except AttributeError:
-            sender = None
+            del sender
             print("Attribure Error")
             time.sleep(10)
 
