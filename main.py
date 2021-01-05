@@ -58,9 +58,11 @@ if __name__ == '__main__':
 
     while 1:
         try:
+            if sender is None:
+                sender = ImageSender(server_address, sender_name)
+
             ret_code, jpg = cv2.imencode('.jpg', get_format_image(), [int(cv2.IMWRITE_JPEG_QUALITY), 95])
             resp = sender.send_image_with_timeout(jpg)
-            # resp = sender.send_image_without_timeout(jpg)
         except func_timeout.FunctionTimedOut as ex:
             print(ex)
 
@@ -71,5 +73,9 @@ if __name__ == '__main__':
             print(ex)
             sender = None
 
+        except AttributeError:
+            sender = None
+            print("Attribure Error")
+            time.sleep(10)
 
 
