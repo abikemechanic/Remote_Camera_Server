@@ -4,34 +4,12 @@ import zmq
 import time
 import func_timeout
 import json
-from flir_camera import FlirCamera
 from image_sender import ImageSender
 
 
 def get_config():
     with open('server_config.cfg') as f:
         return json.load(f)
-
-
-# def connect_to_zmq_server(address, recursion_count=0):
-#     try:
-#         sndr = imagezmq.ImageSender(connect_to=f'tcp://{address}:555')
-#         return sndr
-#     except zmq.error.ZMQError as connect_ex:
-#         if recursion_count > 10:
-#             return False
-#
-#         print(connect_ex)
-#         time.sleep(10)
-#         connect_to_zmq_server(address, recursion_count+1)
-#
-#
-# @func_timeout.func_set_timeout(2)
-# def send_image_to_hub(jpg_img):
-#     reply_from_server = sender.send_jpg(sender_name, jpg_img)
-#     if reply_from_server != b'OK':
-#         print(reply_from_server)
-
 
 @func_timeout.func_set_timeout(2)
 def get_format_image():
@@ -59,6 +37,9 @@ def get_format_image():
 
 def get_camera(camera_spec, recursion_count=0):
     if camera_spec == 'Blackfly':
+        # import FlirCamera only if necessary
+        # it is difficult to install the needed libraries and I don't want to everytime
+        from flir_camera import FlirCamera
         return FlirCamera()
     elif camera_spec == 'USB':
         return cv2.VideoCapture(0)
